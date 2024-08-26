@@ -1,0 +1,5 @@
+mage-ai==0.7.14  # Versão usada para desenvolvimento no Mage.ai
+boto3==1.28.0  # AWS SDK for Python, utilizado pelo mage_ai.io.s3
+pandas==1.5.3  # Biblioteca para manipulação de dados
+requests==2.31.0  # Para realizar downloads via HTTP
+pyyaml==6.0  # Usado pelo ConfigFileLoader para carregar o arquivo io_config.yaml
