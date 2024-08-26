@@ -63,6 +63,10 @@ Update the `io_config.yaml` configuration file with your `S3` credentials and th
 - `Export to S3`: The processed data is exported in CSV format to an S3 bucket, organized with a directory structure based on processing date and time.
 - `Logging and Error Handling`: The script includes detailed logging and error handling to ensure that failures are properly recorded and the process continues, minimizing disruptions.
 
+### Contribution to Data Engineering
+
+This pipeline automates and simplifies the process of ingesting large volumes of data from the Federal Revenue, a common task in big data projects in Brazil. The modularity and robustness of the code ensure that it can be easily adapted for other projects and environments. Additionally, exporting the data to S3 allows for integration with other tools and pipelines on AWS, contributing to the scalability and efficiency of data systems.
+
 
 
 
