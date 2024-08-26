@@ -4,25 +4,24 @@
 The CNPJ Data ETL Pipeline is an automated data pipeline designed to handle the extraction, transformation, and loading (ETL) of data related to commercial establishments registered with the Brazilian Federal Revenue (RFB). This project facilitates the efficient management and analysis of large datasets, making them accessible for various data engineering applications.
 
 ### Problem Description
-Brazilian companies are registered with the Federal Revenue with a variety of information, including CNPJ identifiers, names, addresses, and economic activity codes (CNAE). These data are vital for economic analyses, compliance, and other big data applications. However, the volume and structure of the data, distributed across multiple files and encoded in different formats, pose significant challenges for efficient ingestion and processing.
+Brazil’s commercial establishment data, registered with the Federal Revenue, is essential for economic analysis, compliance, and big data applications. However, the data is spread across multiple files, encoded in different formats, and contains inconsistencies, making the ingestion and processing of these datasets challenging. The complexity and volume of the data necessitate an automated, scalable, and reliable pipeline.
 
 ### Objective
-The objective of this pipeline is to automate the download, processing, and storage of data on establishments from the Federal Revenue. This process is carried out in several stages, including file decompression, data cleaning, chunk processing for memory optimization, and final data export to an AWS S3 bucket. This pipeline was developed to be scalable, efficient, and reproducible, facilitating integration with other data engineering systems.
+The pipeline's primary objective is to automate the download, processing, and storage of establishment data from the Federal Revenue. The process includes file decompression, data cleaning, chunk processing for memory optimization, and exporting the cleaned data to an AWS S3 bucket. The pipeline is designed to be scalable, efficient, and reproducible, ensuring seamless integration with other data engineering systems.
 
 ### Prerequisites
-- Python 3.8 or higher
-- Mage.ai
-- AWS CLI configured with appropriate credentials
-- Pandas, Requests, and other dependencies listed in `requirements.txt`
-- Permissions to access and write to the S3 bucket
+- `Python`: Version 3.8 or higher.
+- `Mage.ai`: Data pipeline management tool.
+- `AWS CLI`: Configured with appropriate credentials for accessing S3.
+- `Python Libraries`: Pandas, Requests, Boto3, and other dependencies listed in `requirements.txt`.
+- `S3 Bucket`: Access to an AWS S3 bucket for storing the processed data.
 
 ### Installation
-
 1. Clone this repository:
 
 ```py
 git clone https://github.com/nathadriele/cnpj-data-pipeline.git
-cd cnpj-data-pipeline
+cd cnpj_data_etl_pipeline
 ```
 
 2. Create and activate a virtual environment:
