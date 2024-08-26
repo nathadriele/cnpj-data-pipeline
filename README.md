@@ -44,16 +44,15 @@ pip install -r requirements.txt
 Update the `io_config.yaml` configuration file with your `S3` credentials and the bucket where the data will be stored.
 
 ### Code Structure
-
 ```py
-- cnpj_data_etl_pipeline/: Root directory containing all essential components of the ETL pipeline.
-     - data_loaders/: Contains the main script responsible for ETL operations.
-          - cnpj_data_pipeline_script.py: Script managing all stages of the pipeline, from downloading data from the Federal Revenue to uploading it to AWS S3, including chunked data processing for memory optimization.
-- pipelines/: Contains pipeline configurations that define how and when the pipeline should run.
-     - metadata.yaml: Defines execution blocks, execution configuration, and pipeline dependencies.
-     - triggers.yaml: Defines the scheduling and triggers that control the automated pipeline execution, such as execution intervals and triggering conditions.
-- io_config.yaml: Configuration file that defines AWS credentials and the S3 bucket where processed data will be stored.
-- requirements.txt: Lists all the libraries and dependencies needed to run the project, allowing easy installation via pip install -r requirements.txt.
+- `cnpj_data_etl_pipeline/`: Root directory containing all essential components of the ETL pipeline.
+     - `data_loaders/`: Contains the main script responsible for ETL operations.
+          - `cnpj_data_pipeline_script.py`: Script managing all stages of the pipeline, from downloading data from the Federal Revenue to uploading it to AWS S3, including chunked data processing for memory optimization.
+- `pipelines/`: Contains pipeline configurations that define how and when the pipeline should run.
+     - `metadata.yaml`: Defines execution blocks, execution configuration, and pipeline dependencies.
+     - `triggers.yaml`: Defines the scheduling and triggers that control the automated pipeline execution, such as execution intervals and triggering conditions.
+- `io_config.yaml`: Configuration file that defines AWS credentials and the S3 bucket where processed data will be stored.
+- `requirements.txt`: Lists all the libraries and dependencies needed to run the project, allowing easy installation via `pip install -r requirements.txt`.
 ```
 
 ### How the Script Works
