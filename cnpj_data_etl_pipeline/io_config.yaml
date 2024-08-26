@@ -1,0 +1,10 @@
+default:
+  aws_access_key_id: YOUR_AWS_ACCESS_KEY_ID
+  aws_secret_access_key: YOUR_AWS_SECRET_ACCESS_KEY
+  aws_session_token: YOUR_AWS_SESSION_TOKEN
+  region_name: YOUR_AWS_REGION
+  bucket_name: your-data-lake
+  data_prefix: receita-federal/estabelecimentos/
+  output_format: csv
+  logging_level: INFO
+  retries: 3
