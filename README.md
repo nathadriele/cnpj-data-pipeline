@@ -13,5 +13,36 @@ The objective of this pipeline is to automate the download, processing, and stor
 - Python 3.8 or higher
 - Mage.ai
 - AWS CLI configured with appropriate credentials
-- Pandas, Requests, and other dependencies listed in "requirements.txt"
+- Pandas, Requests, and other dependencies listed in `requirements.txt`
 - Permissions to access and write to the S3 bucket
+
+### Installation
+
+1. Clone this repository:
+
+```py
+git clone https://github.com/nathadriele/cnpj-data-pipeline.git
+cd cnpj-data-pipeline
+```
+
+2. Create and activate a virtual environment:
+
+```py
+python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+```
+
+3. Install the dependencies:
+
+```py
+pip install -r requirements.txt
+```
+
+4. Configure Mage.ai:
+
+- Follow the instructions in `Mage.ai` Documentation to set up the environment.
+
+Update the `io_config.yaml` configuration file with your `S3` credentials and the bucket where the data will be stored.
+
+
+
