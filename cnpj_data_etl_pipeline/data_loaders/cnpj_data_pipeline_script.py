@@ -5,7 +5,7 @@ from mage_ai.io.s3 import S3
 from zipfile import ZipFile
 from datetime import datetime
 from io import BytesIO
-from os import path
+from os import path, getenv
 import requests
 import pandas as pd
 import gc
@@ -19,9 +19,11 @@ RF_FILE = 'Estabelecimentos'
 FILE_EXT = ".zip"
 ENCODING = "ISO-8859-1"
 CHUNKSIZE = 1500000
-BUCKET_NAME = 'your-data-lake'
+BUCKET_NAME = getenv('BUCKET_NAME', 'your-data-lake')
 CONFIG_PATH = path.join(get_repo_path(), 'io_config.yaml')
 CONFIG_PROFILE = 'default'
+REQUEST_TIMEOUT = 10
+MAX_RETRIES = 3
 
 COLUMNS = [
     "cnpj", "cnpj_dv", "identificador", "nome_fantasia", "situacao", 
@@ -46,11 +48,19 @@ DTYPES = {
     "data_situacao_especial": "string"
 }
 
-def download_and_extract_file(url: str) -> BytesIO:
-    response = requests.get(url)
-    response.raise_for_status()
-    zipfile = ZipFile(BytesIO(response.content))
-    return zipfile.open(zipfile.namelist()[0])
+def download_and_extract_file(url: str, retries: int = MAX_RETRIES) -> BytesIO:
+    for attempt in range(retries):
+        try:
+            response = requests.get(url, timeout=REQUEST_TIMEOUT)
+            response.raise_for_status()
+            zipfile = ZipFile(BytesIO(response.content))
+            return zipfile.open(zipfile.namelist()[0])
+        except requests.RequestException as e:
+            logger.warning(f"Attempt {attempt + 1} failed: {e}")
+            if attempt == retries - 1:
+                logger.error("All download attempts failed.")
+                raise
+            continue
 
 def process_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     df['nome_fantasia'] = df['nome_fantasia'].fillna("").str.replace("'", "")
@@ -62,26 +72,26 @@ def export_to_s3(df: pd.DataFrame, bucket_name: str, object_key: str) -> None:
         df, bucket_name, object_key, "csv"
     )
 
+def process_and_export_chunk(csv_file, part_num: int) -> None:
+    for df in pd.read_csv(
+        csv_file, encoding=ENCODING, delimiter=";", names=COLUMNS, 
+        chunksize=CHUNKSIZE, dtype=DTYPES, index_col=0, iterator=True
+    ):
+        df = process_dataframe(df)
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')
+        object_key = f'receita-federal/estabelecimentos/estabelecimentos_{timestamp}.csv'
+        export_to_s3(df, BUCKET_NAME, object_key)
+        del df
+        gc.collect()
+    logger.info(f"Successfully processed part {part_num}")
+
 @data_loader
 def load_data(*args, **kwargs) -> None:
     try:
         for i in range(10):
             url = f"{BASE_URL}{RF_FILE}{i}{FILE_EXT}"
             csv_file = download_and_extract_file(url)
-            
-            for df in pd.read_csv(
-                csv_file, encoding=ENCODING, delimiter=";", names=COLUMNS, 
-                chunksize=CHUNKSIZE, dtype=DTYPES, index_col=0
-            ):
-                df = process_dataframe(df)
-                timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')
-                object_key = f'receita-federal/estabelecimentos/estabelecimentos_{timestamp}.csv'
-                export_to_s3(df, BUCKET_NAME, object_key)
-                
-                del df
-                gc.collect()
-                
-            logger.info(f"Successfully processed part {i}")
+            process_and_export_chunk(csv_file, i)
     
     except Exception as e:
         logger.error(f"Failed to load data: {str(e)}")
