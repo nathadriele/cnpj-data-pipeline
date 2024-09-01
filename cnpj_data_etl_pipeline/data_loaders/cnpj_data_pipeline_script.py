@@ -25,7 +25,6 @@ CONFIG_PROFILE = 'default'
 REQUEST_TIMEOUT = 10
 MAX_RETRIES = 3
 
-# Define the columns expected in the CSV file.
 COLUMNS = [
     "cnpj", "cnpj_dv", "identificador", "nome_fantasia", "situacao", 
     "data_situacao", "motivo_situacao", "nome_cidade_exterior", "pais", 
@@ -35,7 +34,6 @@ COLUMNS = [
     "fax", "email", "situacao_especial", "data_situacao_especial"
 ]
 
-# Define the data types for each column.
 DTYPES = {
     "cnpj": "string", "cnpj_dv": "string", "identificador": "string", 
     "nome_fantasia": "string", "situacao": "string", "data_situacao": "string", 
@@ -77,10 +75,6 @@ def download_and_extract_file(url: str, retries: int = MAX_RETRIES) -> BytesIO:
 def process_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """
     Clean specific columns in the DataFrame.
-    Args:
-        df (pd.DataFrame): DataFrame to process.
-    Returns:
-        pd.DataFrame: Processed DataFrame.
     """
     df['nome_fantasia'] = df['nome_fantasia'].fillna("").str.replace("'", "")
     df['cnae_secundario'] = df['cnae_secundario'].str.replace("'", "")
@@ -89,16 +83,18 @@ def process_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 def export_to_s3(df: pd.DataFrame, bucket_name: str, object_key: str) -> None:
     """
     Export DataFrame to S3 as a CSV file.
-    Args:
-        df (pd.DataFrame): DataFrame to export.
-        bucket_name (str): S3 bucket name.
-        object_key (str): S3 object key.
     """
     S3.with_config(ConfigFileLoader(CONFIG_PATH, CONFIG_PROFILE)).export(
         df, bucket_name, object_key, "csv"
     )
 
 def process_and_export_chunk(csv_file, part_num: int) -> None:
+    """
+    Process and export data chunks from a CSV file.
+    Args:
+        csv_file (BytesIO): CSV file to process.
+        part_num (int): Part number for logging.
+    """
     for df in pd.read_csv(
         csv_file, encoding=ENCODING, delimiter=";", names=COLUMNS, 
         chunksize=CHUNKSIZE, dtype=DTYPES, index_col=0, iterator=True
