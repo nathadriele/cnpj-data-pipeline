@@ -50,15 +50,8 @@ DTYPES = {
 
 def download_and_extract_file(url: str, retries: int = MAX_RETRIES) -> BytesIO:
     """
-    Download and extract a file from a URL.
-    Args:
-        url (str): URL to download from.
-        retries (int): Number of retry attempts.
-    Returns:
-        BytesIO: Extracted file as BytesIO.
-    Raises:
-        Exception: If all retry attempts fail.
-    """    
+    Download and extract a file from the given URL.
+    """ 
     for attempt in range(retries):
         try:
             response = requests.get(url, timeout=REQUEST_TIMEOUT)
@@ -91,9 +84,6 @@ def export_to_s3(df: pd.DataFrame, bucket_name: str, object_key: str) -> None:
 def process_and_export_chunk(csv_file, part_num: int) -> None:
     """
     Process and export data chunks from a CSV file.
-    Args:
-        csv_file (BytesIO): CSV file to process.
-        part_num (int): Part number for logging.
     """
     for df in pd.read_csv(
         csv_file, encoding=ENCODING, delimiter=";", names=COLUMNS, 
@@ -109,6 +99,9 @@ def process_and_export_chunk(csv_file, part_num: int) -> None:
 
 @data_loader
 def load_data(*args, **kwargs) -> None:
+    """
+    Load and process data from multiple URLs.
+    """
     try:
         for i in range(10):
             url = f"{BASE_URL}{RF_FILE}{i}{FILE_EXT}"
