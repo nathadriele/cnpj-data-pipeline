@@ -25,6 +25,7 @@ CONFIG_PROFILE = 'default'
 REQUEST_TIMEOUT = 10
 MAX_RETRIES = 3
 
+# Define the columns expected in the CSV file.
 COLUMNS = [
     "cnpj", "cnpj_dv", "identificador", "nome_fantasia", "situacao", 
     "data_situacao", "motivo_situacao", "nome_cidade_exterior", "pais", 
@@ -34,6 +35,7 @@ COLUMNS = [
     "fax", "email", "situacao_especial", "data_situacao_especial"
 ]
 
+# Define the data types for each column.
 DTYPES = {
     "cnpj": "string", "cnpj_dv": "string", "identificador": "string", 
     "nome_fantasia": "string", "situacao": "string", "data_situacao": "string", 
@@ -49,6 +51,16 @@ DTYPES = {
 }
 
 def download_and_extract_file(url: str, retries: int = MAX_RETRIES) -> BytesIO:
+    """
+    Download and extract a file from a URL.
+    Args:
+        url (str): URL to download from.
+        retries (int): Number of retry attempts.
+    Returns:
+        BytesIO: Extracted file as BytesIO.
+    Raises:
+        Exception: If all retry attempts fail.
+    """    
     for attempt in range(retries):
         try:
             response = requests.get(url, timeout=REQUEST_TIMEOUT)
@@ -62,12 +74,26 @@ def download_and_extract_file(url: str, retries: int = MAX_RETRIES) -> BytesIO:
                 raise
             continue
 
-def process_dataframe(df: pd.DataFrame) -> pd.DataFrame:  
+def process_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Clean specific columns in the DataFrame.
+    Args:
+        df (pd.DataFrame): DataFrame to process.
+    Returns:
+        pd.DataFrame: Processed DataFrame.
+    """
     df['nome_fantasia'] = df['nome_fantasia'].fillna("").str.replace("'", "")
     df['cnae_secundario'] = df['cnae_secundario'].str.replace("'", "")
     return df
 
 def export_to_s3(df: pd.DataFrame, bucket_name: str, object_key: str) -> None:
+    """
+    Export DataFrame to S3 as a CSV file.
+    Args:
+        df (pd.DataFrame): DataFrame to export.
+        bucket_name (str): S3 bucket name.
+        object_key (str): S3 object key.
+    """
     S3.with_config(ConfigFileLoader(CONFIG_PATH, CONFIG_PROFILE)).export(
         df, bucket_name, object_key, "csv"
     )
