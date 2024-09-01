@@ -11,9 +11,11 @@ import pandas as pd
 import gc
 import logging
 
+# Configure logging for the module.
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Define constants for URL and file handling.
 BASE_URL = 'https://dadosabertos.rfb.gov.br/CNPJ/'
 RF_FILE = 'Estabelecimentos'
 FILE_EXT = ".zip"
@@ -25,6 +27,7 @@ CONFIG_PROFILE = 'default'
 REQUEST_TIMEOUT = 10
 MAX_RETRIES = 3
 
+# Define the column names and data types for the dataframe.
 COLUMNS = [
     "cnpj", "cnpj_dv", "identificador", "nome_fantasia", "situacao", 
     "data_situacao", "motivo_situacao", "nome_cidade_exterior", "pais", 
@@ -49,6 +52,16 @@ DTYPES = {
 }
 
 def download_and_extract_file(url: str, retries: int = MAX_RETRIES) -> BytesIO:
+    """
+    Download a ZIP file from a URL and extract its content.
+
+    Args:
+        url (str): The URL to download the ZIP file from.
+        retries (int): Number of retries in case of failure.
+
+    Returns:
+        BytesIO: A file-like object containing the extracted file.
+    """
     for attempt in range(retries):
         try:
             response = requests.get(url, timeout=REQUEST_TIMEOUT)
