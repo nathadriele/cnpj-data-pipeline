@@ -76,6 +76,15 @@ def download_and_extract_file(url: str, retries: int = MAX_RETRIES) -> BytesIO:
             continue
 
 def process_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Process and clean the dataframe.
+
+    Args:
+        df (pd.DataFrame): The dataframe to process.
+
+    Returns:
+        pd.DataFrame: The processed dataframe.
+    """    
     df['nome_fantasia'] = df['nome_fantasia'].fillna("").str.replace("'", "")
     df['cnae_secundario'] = df['cnae_secundario'].str.replace("'", "")
     return df
