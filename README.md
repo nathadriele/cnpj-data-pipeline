@@ -1,5 +1,7 @@
 ## CNPJ Data ETL Pipeline
 
+![image](https://github.com/user-attachments/assets/03e4625c-7724-4d74-8188-295e6cd669c2)
+
 ### Overview
 The CNPJ Data ETL Pipeline is an automated data pipeline designed to handle the extraction, transformation, and loading (ETL) of data related to commercial establishments registered with the Brazilian Federal Revenue (RFB). This project facilitates the efficient management and analysis of large datasets, making them accessible for various data engineering applications.
 
